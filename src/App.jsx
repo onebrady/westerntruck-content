@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { reportData } from "./data/reportData";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -9,6 +9,7 @@ import TrafficAnalytics from "./components/TrafficAnalytics";
 import ContentStrategy from "./components/ContentStrategy";
 import Footer from "./components/Footer";
 import ExportButton from "./components/ExportButton";
+import LoginScreen from "./components/LoginScreen";
 import { TrendingUp, BarChart3, FileText } from "lucide-react";
 
 function App() {
@@ -20,7 +21,24 @@ function App() {
 }
 
 function AppContent() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("technical-seo");
+
+  // Check if user is already authenticated on component mount
+  useEffect(() => {
+    const authenticated =
+      localStorage.getItem("westerntruck-authenticated") === "true";
+    setIsAuthenticated(authenticated);
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("westerntruck-authenticated");
+  };
 
   const tabs = [
     {
@@ -45,9 +63,14 @@ function AppContent() {
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component;
 
+  // Show login screen if not authenticated
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
-      <Header />
+      <Header onLogout={handleLogout} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div

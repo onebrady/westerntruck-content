@@ -1,10 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Phone, Globe } from "lucide-react";
+import { Phone, Globe, LogOut } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { reportData } from "../data/reportData";
 
-const Header = () => {
+const Header = ({ onLogout }) => {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -40,6 +40,16 @@ const Header = () => {
               </a>
             </div>
             <ThemeToggle />
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm font-medium"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
